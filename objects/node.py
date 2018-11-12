@@ -6,6 +6,9 @@ class Node:
         self.adjacent = []
         self.tags = dict()
 
+    def __repr__(self):
+        return '(' + str(self.latitude) + ', ' + str(self.longitude) + ')'
+
     def add_tag(self, key, value):
         self.tags[key] = value
 

@@ -1,39 +1,63 @@
 import xml.etree.ElementTree as et
+
 from objects.node import Node
 from objects.way import Way
 
 
+def extract_road(item, roads):
+    way_id = int(item.attrib['id'])
+    way = Way(way_id)
+    is_highway = False
+
+    for child in item:
+        if child.tag == "nd":
+            way.add_node(int(child.attrib['ref']))
+        elif child.tag == "tag":
+            key = child.attrib['k']
+            val = child.attrib['v']
+            if key == "name":
+                way.name = val
+            elif key == "oneway":
+                if val == "yes":
+                    way.is_one_way = True
+            elif key == "highway":
+                is_highway = True
+
+    if way.name is not None and is_highway:
+        if way.name not in roads:
+            roads[way.name] = way
+        else:
+            existing_way = roads[way.name]
+            for node in way.nodes:
+                existing_way.add_node(node)
+
+
+def extract_node(item, nodes):
+    node_id = int(item.attrib['id'])
+    node_lat = float(item.attrib['lat'])
+    node_lon = float(item.attrib['lon'])
+    node = Node(node_id, node_lat, node_lon)
+    for child in item:
+        key = child.attrib['k']
+        val = child.attrib['v']
+        if child.tag == "tag":
+            node.add_tag(key, val)
+
+    assert node_id not in nodes
+    nodes[node_id] = node
+
+
 def parse_osm_file(filename):
     tree = et.parse(filename)
+
     roads = dict()
     nodes = dict()
 
     for item in tree.iter():
         if item.tag == "node":
-            node_id = int(item.attrib['id'])
-            node_lat = float(item.attrib['lat'])
-            node_lon = float(item.attrib['lon'])
-            node = Node(node_id, node_lat, node_lon)
-            for child in item:
-                if child.tag == "tag":
-                    node.add_tag(child.attrib['k'], child.attrib['v'])
-            nodes[node_id] = node
-
+            extract_node(item, nodes)
         elif item.tag == "way":
-            way_id = int(item.attrib['id'])
-            way = Way(way_id)
-            for child in item:
-                if child.tag == "nd":
-                    way.add_node(child.attrib['ref'])
-                elif child.tag == "tag":
-                    key = child.attrib['k']
-                    val = child.attrib['v']
-                    if key == "name":
-                        way.set_name(val)
-                    else:
-                        way.add_tag(key, val)
-                if way.name is not None and "transmission line" not in way.name.lower():
-                    roads[way.name] = way
+            extract_road(item, roads)
 
     return roads, nodes
 
