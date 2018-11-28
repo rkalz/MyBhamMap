@@ -2,3 +2,4 @@ venv/
 .idea/
 *.xml
 __pycache__/
+*.pickle

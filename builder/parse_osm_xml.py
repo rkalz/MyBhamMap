@@ -37,7 +37,6 @@ def extract_node(item, nodes):
         if child.tag == "tag":
             node.add_tag(key, val)
 
-    assert node_id not in nodes
     nodes[node_id] = node
 
 
@@ -57,7 +56,7 @@ def parse_osm_file(filename):
 
 
 if __name__ == "__main__":
-    roads, nodes = parse_osm_file("osm_birmingham.xml")
+    roads, nodes = parse_osm_file("../osm_birmingham.xml")
     print(str(len(nodes)) + " nodes in dataset")
     print(str(len(roads)) + " roads in dataset")
     pass

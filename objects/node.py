@@ -5,9 +5,10 @@ class Node:
         self.longitude = lon
         self.adjacent = []
         self.tags = dict()
+        self.ways = set()
 
     def __repr__(self):
-        return '(' + str(self.latitude) + ', ' + str(self.longitude) + '), ' + str(len(self.adjacent)) \
+        return '(' + str(self.latitude) + ', ' + str(self.longitude) + ') with ' + str(len(self.adjacent)) \
                + " adjacent nodes"
 
     def add_tag(self, key, value):
