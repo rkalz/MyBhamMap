@@ -7,10 +7,11 @@ class Node:
         self.tags = dict()
 
     def __repr__(self):
-        return '(' + str(self.latitude) + ', ' + str(self.longitude) + ')'
+        return '(' + str(self.latitude) + ', ' + str(self.longitude) + '), ' + str(len(self.adjacent)) \
+               + " adjacent nodes"
 
     def add_tag(self, key, value):
         self.tags[key] = value
 
-    def add_adjacent(self, node_id, distance):
-        self.adjacent.append((node_id, distance))
+    def add_adjacent(self, node, distance):
+        self.adjacent.append((node, distance))

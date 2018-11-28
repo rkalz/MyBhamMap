@@ -18,18 +18,12 @@ def extract_road(item, roads):
             if key == "name":
                 way.name = val
             elif key == "oneway":
-                if val == "yes":
-                    way.is_one_way = True
+                    way.is_one_way = val == "yes"
             elif key == "highway":
                 is_highway = True
 
     if way.name is not None and is_highway:
-        if way.name not in roads:
-            roads[way.name] = way
-        else:
-            existing_way = roads[way.name]
-            for node in way.nodes:
-                existing_way.add_node(node)
+        roads.append(way)
 
 
 def extract_node(item, nodes):
@@ -50,7 +44,7 @@ def extract_node(item, nodes):
 def parse_osm_file(filename):
     tree = et.parse(filename)
 
-    roads = dict()
+    roads = []
     nodes = dict()
 
     for item in tree.iter():
