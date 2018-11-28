@@ -1,7 +1,9 @@
 from geopy.distance import great_circle
-from geopy.geocoders import Nominatim, options
+from geopy.geocoders import GoogleV3
 from overpy import Overpass
 
+from os import environ
+from sys import platform
 import ssl
 
 
@@ -16,11 +18,11 @@ def compute_distance_mi(lat_a, lon_a, lat_b, lon_b):
 def get_lat_and_lon(address):
     # Needed for Mac
     ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
-    options.default_ssl_context = ctx
+    if platform == "darwin":
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
 
-    geolocator = Nominatim(user_agent="MyBhamMap 1.0")
+    geolocator = GoogleV3(api_key=environ["GOOGLE_API_KEY"], ssl_context=ctx)
     location_data = geolocator.geocode(address)
     if location_data is None:
         return None
@@ -28,10 +30,10 @@ def get_lat_and_lon(address):
     return location_data.latitude, location_data.longitude
 
 
-def get_nearest_node(lat, lon, nodes, radius=300):
+def get_nearest_node(lat, lon, nodes, radius=300, debug=False):
     # 300 meters is roughly 1000 feet
     overpass_api = Overpass()
-    query = "node(around:{},{},{});out;".format(str(radius), str(lat), str(lon))
+    query = "node(around:{},{},{});out;".format(radius, lat, lon)
     query_result = overpass_api.query(query)
 
     closest_node = None
@@ -46,6 +48,11 @@ def get_nearest_node(lat, lon, nodes, radius=300):
     if closest_node is None:
         return None
 
+    closest_node_distance *= 5280
+    if debug:
+        print("Nearest node to {}, {} is at {}, {} and is {} feet away".format(lat, lon,
+              closest_node.latitude, closest_node.longitude, closest_node_distance))
+
     return closest_node
 
 
@@ -55,9 +62,7 @@ if __name__ == "__main__":
     del import_directed_graph
 
     lat_a, lon_a = get_lat_and_lon("1300 University Blvd, Birmingham, AL")
-    nearest_node_a = get_nearest_node(lat_a, lon_a, d_graph)
-    print("{},{}".format(str(nearest_node_a.latitude), str(nearest_node_a.longitude)))
+    nearest_node_a = get_nearest_node(lat_a, lon_a, d_graph, debug=True)
 
-    lat_b, lon_b = get_lat_and_lon("2235 Lime Rock Rd, Vestavia Hills, AL")
-    nearest_node_b = get_nearest_node(lat_b, lon_b, d_graph)
-    print("{},{}".format(str(nearest_node_b.latitude), str(nearest_node_b.longitude)))
+    lat_b, lon_b = get_lat_and_lon("100 Ben Chapman Dr, Hoover, AL")
+    nearest_node_b = get_nearest_node(lat_b, lon_b, d_graph, debug=True)
