@@ -1,18 +1,11 @@
-from geopy.distance import great_circle
+from compute.calculate_data import compute_distance_mi
+
 from geopy.geocoders import GoogleV3
 from overpy import Overpass
 
 from os import environ
 from sys import platform
 import ssl
-
-
-def _compute_distance(lat_a, lon_a, lat_b, lon_b):
-    return great_circle((lat_a, lon_a), (lat_b, lon_b))
-
-
-def compute_distance_mi(lat_a, lon_a, lat_b, lon_b):
-    return _compute_distance(lat_a, lon_a, lat_b, lon_b).mi
 
 
 def get_lat_and_lon(address):
@@ -50,16 +43,15 @@ def get_nearest_node(lat, lon, nodes, radius=300, debug=False):
 
     closest_node_distance *= 5280
     if debug:
-        print("Nearest node to {}, {} is at {}, {} and is {} feet away".format(lat, lon,
-              closest_node.latitude, closest_node.longitude, closest_node_distance))
+        print("Nearest node to {:.4f}, {:.4f} is at {:.4f}, {:.4f} and is {:.2f} feet away".format(
+            lat, lon, closest_node.latitude, closest_node.longitude, closest_node_distance))
 
     return closest_node
 
 
 if __name__ == "__main__":
     from builder.build_directed_graph import import_directed_graph
-    d_graph = import_directed_graph("../my_bham_map_graph.pickle")
-    del import_directed_graph
+    d_graph = import_directed_graph("../my_bham_map_graph.json")
 
     lat_a, lon_a = get_lat_and_lon("1300 University Blvd, Birmingham, AL")
     nearest_node_a = get_nearest_node(lat_a, lon_a, d_graph, debug=True)

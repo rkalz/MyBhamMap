@@ -1,8 +1,8 @@
 from builder.parse_osm_xml import *
 
-from fetcher.fetch_data import compute_distance_mi
+from compute.calculate_data import compute_distance_mi
 
-import pickle
+import json
 
 
 def build_directed_graph(nodes, ways):
@@ -31,14 +31,32 @@ def build_directed_graph(nodes, ways):
     return directed_graph
 
 
+def _serialize(obj):
+    if isinstance(obj, set):
+        return list(obj)
+    elif isinstance(obj, Node):
+        return obj.__dict__
+
+    return obj
+
+
 def export_directed_graph(d_graph, file_name):
-    with open(file_name, "wb") as f:
-        f.write(pickle.dumps(d_graph))
+    with open(file_name, "w") as f:
+        f.write(json.dumps(d_graph, default=_serialize))
 
 
 def import_directed_graph(file_name):
-    with open(file_name, "rb") as f:
-        d_graph = pickle.loads(f.read())
+    with open(file_name, "r") as f:
+        d_graph_str_key = json.loads(f.read())
+
+    d_graph = dict()
+    for _, data in d_graph_str_key.items():
+        n = Node(data['id'], data['latitude'], data['longitude'])
+        n.adjacent = [tuple(adj) for adj in data['adjacent']]
+        n.tags = data['tags']
+        n.ways = set(data['ways'])
+        d_graph[data['id']] = n
+
     return d_graph
 
 
@@ -46,4 +64,5 @@ if __name__ == "__main__":
     roads, nodes = parse_osm_file("../osm_birmingham.xml")
     directed_graph = build_directed_graph(nodes, roads)
 
-    export_directed_graph(directed_graph, "../my_bham_map_graph.pickle")
+    print("Directed graph generated")
+    export_directed_graph(directed_graph, "../my_bham_map_graph.json")

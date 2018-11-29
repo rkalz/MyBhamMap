@@ -3,6 +3,7 @@ chardet==3.0.4
 cycler==0.10.0
 geographiclib==1.49
 geopy==1.17.0
+HeapDict==1.0.0
 idna==2.7
 kiwisolver==1.0.1
 matplotlib==3.0.2
