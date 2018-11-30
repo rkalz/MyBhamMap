@@ -39,9 +39,9 @@ def shortest_path(start_node_id, end_node_id, d_graph, debug=False, astar=True):
         visited_nodes.add(parent_id)
 
         parent_node = d_graph[parent_id]
-        for child_id, dist_btwn in parent_node.adjacent:
+        for child_id, dist_btwn in parent_node.adjacent.items():
             if child_id not in d_graph:
-                if astar:
+                if debug and astar:
                     print("{} not found".format(child_id))
                 continue
 
@@ -88,10 +88,7 @@ if __name__ == "__main__":
     distance = 0
     for i in range(1, len(path)):
         node_a = d_graph[path[i - 1]]
-        for nid, dist in node_a.adjacent:
-            if nid == path[i]:
-                distance += dist
-                break
+        distance += node_a.adjacent[path[i]]
 
     print("A Star: {:.2f} miles over {} nodes".format(distance, len(path)))
     for nid in path:
@@ -102,9 +99,6 @@ if __name__ == "__main__":
     distance = 0
     for i in range(1, len(path)):
         node_a = d_graph[path[i - 1]]
-        for nid, dist in node_a.adjacent:
-            if nid == path[i]:
-                distance += dist
-                break
+        distance += node_a.adjacent[path[i]]
 
     print("Djikstra: {:.2f} miles over {} nodes".format(distance, len(path)))

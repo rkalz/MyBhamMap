@@ -3,7 +3,7 @@ class Node:
         self.id = id
         self.latitude = lat
         self.longitude = lon
-        self.adjacent = []
+        self.adjacent = dict()
         self.tags = dict()
         self.ways = set()
 
@@ -15,4 +15,4 @@ class Node:
         self.tags[key] = value
 
     def add_adjacent(self, node, distance):
-        self.adjacent.append((node, distance))
+        self.adjacent[node] = distance

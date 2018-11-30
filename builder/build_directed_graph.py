@@ -8,6 +8,9 @@ import json
 def build_directed_graph(nodes, ways):
     for way in ways:
         for i in range(1, len(way.nodes)):
+            if way.nodes[i-1] not in nodes or way.nodes[i] not in nodes:
+                continue
+
             node_a = nodes[way.nodes[i-1]]
             node_b = nodes[way.nodes[i]]
 
@@ -52,7 +55,8 @@ def import_directed_graph(file_name):
     d_graph = dict()
     for _, data in d_graph_str_key.items():
         n = Node(data['id'], data['latitude'], data['longitude'])
-        n.adjacent = [tuple(adj) for adj in data['adjacent']]
+        for node_id, dist in data['adjacent'].items():
+            n.adjacent[int(node_id)] = dist
         n.tags = data['tags']
         n.ways = set(data['ways'])
         d_graph[data['id']] = n
@@ -61,7 +65,7 @@ def import_directed_graph(file_name):
 
 
 if __name__ == "__main__":
-    roads, nodes = parse_osm_file("../osm_birmingham.xml")
+    roads, nodes = parse_osm_file("../osm_birmingham_2.xml")
     directed_graph = build_directed_graph(nodes, roads)
 
     print("Directed graph generated")
