@@ -1,6 +1,6 @@
-from builder.parse_osm_xml import *
+from graph_builder.parse_osm_xml import *
 
-from compute.calculate_data import compute_distance_mi
+from local_calculations.calculate_path import compute_distance_mi
 
 import json
 

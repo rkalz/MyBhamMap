@@ -73,15 +73,17 @@ def shortest_path(start_node_id, end_node_id, d_graph, debug=False, astar=True):
 
 
 if __name__ == "__main__":
-    from fetcher.fetch_data import *
-    from builder.build_directed_graph import *
+    from internet_operations.fetch_data_from_web import *
+    from graph_builder.build_directed_graph import *
+
+    show_djikstra = False
 
     d_graph = import_directed_graph("../my_bham_map_graph.json")
 
-    lat_a, lon_a = get_lat_and_lon("1552 Woodridge Place")
+    lat_a, lon_a = get_lat_and_lon("Hoover Crescent")
     nearest_node_a = get_nearest_node(lat_a, lon_a, d_graph, debug=True)
 
-    lat_b, lon_b = get_lat_and_lon("UAB BEC")
+    lat_b, lon_b = get_lat_and_lon("mr chens hoover")
     nearest_node_b = get_nearest_node(lat_b, lon_b, d_graph, debug=True)
 
     path = shortest_path(nearest_node_a.id, nearest_node_b.id, d_graph, debug=True)
@@ -95,10 +97,14 @@ if __name__ == "__main__":
         node = d_graph[nid]
         print(node.ways)
 
-    path = shortest_path(nearest_node_a.id, nearest_node_b.id, d_graph, debug=True, astar=False)
-    distance = 0
-    for i in range(1, len(path)):
-        node_a = d_graph[path[i - 1]]
-        distance += node_a.adjacent[path[i]]
+    if show_djikstra:
+        path = shortest_path(nearest_node_a.id, nearest_node_b.id, d_graph, debug=True, astar=False)
+        distance = 0
+        for i in range(1, len(path)):
+            node_a = d_graph[path[i - 1]]
+            distance += node_a.adjacent[path[i]]
 
-    print("Djikstra: {:.2f} miles over {} nodes".format(distance, len(path)))
+        print("Djikstra: {:.2f} miles over {} nodes".format(distance, len(path)))
+
+    map_b64 = build_gmap_path_image((lat_a, lon_a), (lat_b, lon_b), path, d_graph, debug=True)
+    print(map_b64)

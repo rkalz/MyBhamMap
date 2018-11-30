@@ -19,22 +19,22 @@ def _angle_of_three(node_a, node_b, node_c):
     return ang_deg
 
 
-def build_direction_list(nodes, d_graph):
+def build_direction_list(nodes, graph):
     d_list = []
 
     for i in range(1, len(nodes)-1):
-        a = d_graph[nodes[i - 1]]
-        b = d_graph[nodes[i]]
-        c = d_graph[nodes[i + 1]]
+        a = graph[nodes[i - 1]]
+        b = graph[nodes[i]]
+        c = graph[nodes[i + 1]]
         angle = _angle_of_three(a, b, c)
 
     return d_list
 
 
 if __name__ == "__main__":
-    from fetcher.fetch_data import *
-    from builder.build_directed_graph import *
-    from compute.calculate_data import shortest_path
+    from internet_operations.fetch_data_from_web import *
+    from graph_builder.build_directed_graph import *
+    from local_calculations.calculate_path import shortest_path
 
     d_graph = import_directed_graph("../my_bham_map_graph.json")
 
