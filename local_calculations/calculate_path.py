@@ -80,10 +80,10 @@ if __name__ == "__main__":
 
     d_graph = import_directed_graph("../my_bham_map_graph.json")
 
-    lat_a, lon_a = get_lat_and_lon("Hoover Crescent")
+    lat_a, lon_a = get_lat_and_lon("1552 woodridge pl")
     nearest_node_a = get_nearest_node(lat_a, lon_a, d_graph, debug=True)
 
-    lat_b, lon_b = get_lat_and_lon("mr chens hoover")
+    lat_b, lon_b = get_lat_and_lon("amc vestavia")
     nearest_node_b = get_nearest_node(lat_b, lon_b, d_graph, debug=True)
 
     path = shortest_path(nearest_node_a.id, nearest_node_b.id, d_graph, debug=True)
