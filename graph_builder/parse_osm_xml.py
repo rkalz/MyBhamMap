@@ -15,7 +15,7 @@ def extract_road(item, roads):
         elif child.tag == "tag":
             key = child.attrib['k']
             val = child.attrib['v']
-            if key == "name":
+            if key == "name" or (key == "ref" and way.name is None):
                 way.name = val
             elif key == "oneway":
                     way.is_one_way = val == "yes"

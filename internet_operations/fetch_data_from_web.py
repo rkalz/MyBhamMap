@@ -55,7 +55,7 @@ def get_nearest_node(lat, lon, nodes, radius=300, debug=False):
     for node in query_result.nodes:
         if node.id in nodes:
             dist = compute_distance_mi(lat, lon, node.lat, node.lon)
-            if closest_node is None or dist < closest_node_distance:
+            if closest_node is None or (dist < closest_node_distance and node.id in nodes):
                 closest_node = nodes[node.id]
                 closest_node_distance = dist
 

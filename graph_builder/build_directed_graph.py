@@ -6,7 +6,12 @@ import json
 
 
 def build_directed_graph(nodes, ways):
+    faulty_roads = {"Chinquapin Road"}
+
     for way in ways:
+        if way.name in faulty_roads:
+            continue
+
         for i in range(1, len(way.nodes)):
             if way.nodes[i-1] not in nodes or way.nodes[i] not in nodes:
                 continue
@@ -65,7 +70,7 @@ def import_directed_graph(file_name):
 
 
 if __name__ == "__main__":
-    roads, nodes = parse_osm_file("../osm_birmingham_2.xml")
+    roads, nodes = parse_osm_file("../osm_birmingham.xml")
     directed_graph = build_directed_graph(nodes, roads)
 
     print("Directed graph generated")
