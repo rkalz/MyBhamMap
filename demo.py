@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from graph_builder.parse_osm_xml import *
 from graph_builder.build_directed_graph import *
 from internet_operations.fetch_data_from_web import *
@@ -8,8 +10,7 @@ from time import time
 
 if __name__ == "__main__":
     print("Generating graph")
-    roads, nodes = parse_osm_file("osm_birmingham.xml")
-    d_graph = build_directed_graph(nodes, roads)
+    d_graph = import_directed_graph("my_bham_map_graph.json")
 
     while True:
         try:
