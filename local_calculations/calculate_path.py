@@ -76,15 +76,15 @@ if __name__ == "__main__":
     from internet_operations.fetch_data_from_web import *
     from graph_builder.build_directed_graph import *
 
-    show_djikstra = False
+    show_djikstra = True
 
     d_graph = import_directed_graph("../my_bham_map_graph.json")
 
-    lat_a, lon_a = get_lat_and_lon("uab campbell hall")
-    nearest_node_a = get_nearest_node(lat_a, lon_a, d_graph, debug=True)
+    lat_a, lon_a = get_lat_and_lon("1552 woodridge place")
+    nearest_node_a = get_nearest_node(lat_a, lon_a, d_graph, debug=False)
 
-    lat_b, lon_b = get_lat_and_lon("mcwane center")
-    nearest_node_b = get_nearest_node(lat_b, lon_b, d_graph, debug=True)
+    lat_b, lon_b = get_lat_and_lon("uab bec")
+    nearest_node_b = get_nearest_node(lat_b, lon_b, d_graph, debug=False)
 
     path = shortest_path(nearest_node_a.id, nearest_node_b.id, d_graph, debug=True)
     distance = 0
@@ -93,9 +93,9 @@ if __name__ == "__main__":
         distance += node_a.adjacent[path[i]]
 
     print("A Star: {:.2f} miles over {} nodes".format(distance, len(path)))
-    for nid in path:
-        node = d_graph[nid]
-        print(node.ways)
+    # for nid in path:
+    #     node = d_graph[nid]
+    #     print(node.ways)
 
     if show_djikstra:
         path = shortest_path(nearest_node_a.id, nearest_node_b.id, d_graph, debug=True, astar=False)
@@ -106,5 +106,10 @@ if __name__ == "__main__":
 
         print("Djikstra: {:.2f} miles over {} nodes".format(distance, len(path)))
 
-    map_b64 = build_gmap_path_image((lat_a, lon_a), (lat_b, lon_b), path, d_graph, debug=True)
+    map_b64 = build_gmap_path_image((lat_a, lon_a), (lat_b, lon_b), path, d_graph, debug=False)
     print(map_b64)
+
+    from base64 import b64decode
+    map_bytes = b64decode(map_b64)
+    with open("image.png", "wb") as f:
+        f.write(map_bytes)
