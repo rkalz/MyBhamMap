@@ -5,12 +5,14 @@ from graph_builder.build_directed_graph import *
 from internet_operations.fetch_data_from_web import *
 from local_calculations.calculate_path import *
 from base64 import b64decode
+from os import system
 from time import time
 
 
 if __name__ == "__main__":
     print("Generating graph")
     d_graph = import_directed_graph("my_bham_map_graph.json")
+    system("export GOOGLE_API_KEY")
 
     while True:
         try:
